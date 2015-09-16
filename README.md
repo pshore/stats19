@@ -19,13 +19,14 @@ Download the data described:
 In 2014 this saved as a 103Mb file called Stats19_Data_2005-2014.zip
   
 unzip this file inside the following directory:
-  
-  cd data/core-tables
-  unzip Stats19_Data_2005-2014.zip
-  ls
-    Accidents0514.csv       
-    Casualties0514.csv
-    Vehicles0514.csv
+
+  cd data/core-tables  
+  unzip `Stats19_Data_2005-2014.zip`  
+  ls  
+
+  `  Accidents0514.csv`  
+  `  Casualties0514.csv`  
+  `  Vehicles0514.csv`  
   
 
 Create the database

@@ -1,0 +1,29 @@
+# Some common functions used by the other scripts
+
+# -------------------------------------------------------------------------
+# Get a list of all the PostgreSQL databases.
+
+function list_dbs()
+{
+    psql postgres postgres -qtl | grep "|" | cut -d " " -f 2
+}
+
+# -------------------------------------------------------------------------
+# Check if the database exists.
+#   Arg1 The database name to check for.
+
+function db_exists()
+{
+    if [ "$#" -ne 1 ] ; then
+      echo "Warning, no database name was passed to db_exists"
+      return 1;
+    fi
+
+    for DB in `list_dbs`
+    do
+        if [ $DB = "$1" ] ; then return 0 ; fi
+    done
+
+    return 1
+}
+

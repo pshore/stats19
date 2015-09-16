@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Erase all data and reload into the empty database.
+#
+# Command line options:
+#
+# -q          Ignore any errors.
+#
+# -db <name>  Specify the name of the database to create. This defaults
+#             to the value of $DB_NAME in this script.
+
+# default database name
+DB_NAME=stats19
+
+DIRNAME=`dirname "$0"`
+. $DIRNAME/postgres-functions
+
+QUIET=0
+
+while [ $# -ge 1 ] ; do
+    case "$1" in
+      -q)
+        QUIET=1
+        shift
+        ;;
+      -db)
+        shift
+        DB_NAME=$1
+        shift
+        ;;
+      *)
+        echo Usage: postgres-create-db [-q] [-db <name>]
+        exit 1
+        ;;
+    esac
+done
+
+db_exists $DB_NAME
+
+if [ $? -ne 0 ] ; then
+    [ $QUIET -ne 0 ] && exit 0
+    echo "ERROR:  database \"$DB_NAME\" does not exist"
+    exit 1
+fi
+
+pushd $DIRNAME/..
+psql $DB_NAME stats19 -f sql/postgres-load-data.sql
+popd

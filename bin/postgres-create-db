@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# Create the database. The database should not already exist.
+#
+# Command line options:
+#
+# -q          Ignore any errors and do nothing if the database already
+#             exists.
+#
+# -db <name>  Specify the name of the database to create. This defaults
+#             to the value of $DB_NAME in this script.
+
+# default database name
+DB_NAME=stats19
+
+DIRNAME=`dirname "$0"`
+. $DIRNAME/postgres-functions
+
+QUIET=0
+
+while [ $# -ge 1 ] ; do
+    case "$1" in
+      -q)
+        QUIET=1
+        shift
+        ;;
+      -db)
+        shift
+        DB_NAME=$1
+        shift
+        ;;
+      *)
+        echo Usage: postgres-create-db [-q] [-db <name>]
+        exit 1
+        ;;
+    esac
+done
+
+db_exists $DB_NAME
+
+if [ $? -eq 0 ] ; then
+    [ $QUIET -ne 0 ] && exit 0
+    echo "ERROR:  database \"$DB_NAME\" already exists"
+    exit 1
+fi
+
+pushd $DIRNAME/../sql
+psql postgres postgres -f postgres-create-db.sql -v db=$DB_NAME
+popd
